@@ -1,0 +1,838 @@
+Task 01:-
+
+mysql -u root -p
+
+CREATE DATABASE E15348Lab04;
+USE E15348Lab04;
+
+CREATE TABLE movie(movie_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, title VARCHAR(60), year INT NOT NULL, director VARCHAR(40) );
+
+CREATE TABLE reviewer(reviewer_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, reviewer_name VARCHAR(40));
+
+CREATE TABLE rating(reviewer_id INT NOT NULL, movie_id INT NOT NULL, stars INT NOT NULL, rating_date DATE, CONSTRAINT FK_reviewer FOREIGN KEY(reviewer_id) REFERENCES reviewer(reviewer_id) ON DELETE CASCADE, CONSTRAINT FK_movie FOREIGN KEY(movie_id) REFERENCES movie(movie_id) ON DELETE CASCADE);
+
+///////CREATE TABLE rating(reviewer_id INT NOT NULL, movie_id INT NOT NULL, stars INT NOT NULL, rating_date DATE, CONSTRAINT FK_reviewer FOREIGN KEY(reviewer_id) REFERENCES reviewer(reviewer_id), CONSTRAINT FK_movie FOREIGN KEY(movie_id) REFERENCES movie(movie_id));
+
+DESCRIBE movie;
++----------+-------------+------+-----+---------+----------------+
+| Field    | Type        | Null | Key | Default | Extra          |
++----------+-------------+------+-----+---------+----------------+
+| movie_id | int(11)     | NO   | PRI | NULL    | auto_increment |
+| title    | varchar(60) | YES  |     | NULL    |                |
+| year     | int(11)     | NO   |     | NULL    |                |
+| director | varchar(40) | NO   |     | NULL    |                |
++----------+-------------+------+-----+---------+----------------+
+4 rows in set (0.00 sec)
+
+DESCRIBE reviewer;
++---------------+-------------+------+-----+---------+----------------+
+| Field         | Type        | Null | Key | Default | Extra          |
++---------------+-------------+------+-----+---------+----------------+
+| reviewer_id   | int(11)     | NO   | PRI | NULL    | auto_increment |
+| reviewer_name | varchar(40) | YES  |     | NULL    |                |
++---------------+-------------+------+-----+---------+----------------+
+2 rows in set (0.00 sec)
+
+DESCRIBE rating;
++-------------+---------+------+-----+---------+-------+
+| Field       | Type    | Null | Key | Default | Extra |
++-------------+---------+------+-----+---------+-------+
+| reviewer_id | int(11) | NO   | MUL | NULL    |       |
+| movie_id    | int(11) | NO   | MUL | NULL    |       |
+| stars       | int(11) | NO   |     | NULL    |       |
+| rating_date | date    | YES  |     | NULL    |       |
++-------------+---------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+INSERT INTO movie VALUES(101,'Gone with the Wind',1939,'Victor Fleming'), ('NULL','Star Wars',1977,'George Lucas'), ('NULL','The Sound of Music',1965,'Robert Wise'), ('NULL','E.T.',1982,'Steven Spielberg'), ('NULL','Titanic',1997,'James Cameron'), ('NULL','Snow White',1937,null), ('NULL','Avatar',2009,'James Cameron'), ('NULL','Raiders of the Lost Ark',1981,'Steven Spielberg');
+
+SELECT * FROM movie;
++----------+-------------------------+------+------------------+
+| movie_id | title                   | year | director         |
++----------+-------------------------+------+------------------+
+|      101 | Gone with the Wind      | 1939 | Victor Fleming   |
+|      102 | Star Wars               | 1977 | George Lucas     |
+|      103 | The Sound of Music      | 1965 | Robert Wise      |
+|      104 | E.T.                    | 1982 | Steven Spielberg |
+|      105 | Titanic                 | 1997 | James Cameron    |
+|      106 | Snow White              | 1937 | NULL             |
+|      107 | Avatar                  | 2009 | James Cameron    |
+|      108 | Raiders of the Lost Ark | 1981 | Steven Spielberg |
++----------+-------------------------+------+------------------+
+8 rows in set (0.00 sec)
+
+
+INSERT INTO reviewer VALUES(201,'Sarah Martinez'),('NULL','Daniel Lewis'),('NULL','Brittany Harris'),('NULL','Mike Anderson'),('NULL','Chris Jackson'),('NULL','Elizabeth Thomas'),('NULL','James Cameron'),('NULL','Ashley White');
+
+
+SELECT * FROM reviewer;
++-------------+------------------+
+| reviewer_id | reviewer_name    |
++-------------+------------------+
+|         201 | Sarah Martinez   |
+|         202 | Daniel Lewis     |
+|         203 | Brittany Harris  |
+|         204 | Mike Anderson    |
+|         205 | Chris Jackson    |
+|         206 | Elizabeth Thomas |
+|         207 | James Cameron    |
+|         208 | Ashley White     |
++-------------+------------------+
+8 rows in set (0.00 sec)
+
+INSERT INTO rating VALUES ('201','101','2','2011-01-22'),('201','101','4','2011-01-27'), ('202','106','4',null),('203','103','2','2011-01-20'), ('203','108','4','2011-01-12'),('203','108','2','2011-01-30'),('204','101','3','2011-01-09'), ('205','103','3','2011-01-27'), ('205','104','2','2011-01-22'), ('205','108','4',null), ('206','107','3','2011-01-15'), ('206','106','5','2011-01-19'), ('207','107','5','2011-01-20'), ('208','104','3','2011-01-02');
+	
+
+SELECT * FROM rating;
++-------------+----------+-------+-------------+
+| reviewer_id | movie_id | stars | rating_date |
++-------------+----------+-------+-------------+
+|         201 |      101 |     2 | 2011-01-22  |
+|         201 |      101 |     4 | 2011-01-27  |
+|         202 |      106 |     4 | NULL        |
+|         203 |      103 |     2 | 2011-01-20  |
+|         203 |      108 |     4 | 2011-01-12  |
+|         203 |      108 |     2 | 2011-01-30  |
+|         204 |      101 |     3 | 2011-01-09  |
+|         205 |      103 |     3 | 2011-01-27  |
+|         205 |      104 |     2 | 2011-01-22  |
+|         205 |      108 |     4 | NULL        |
+|         206 |      107 |     3 | 2011-01-15  |
+|         206 |      106 |     5 | 2011-01-19  |
+|         207 |      107 |     5 | 2011-01-20  |
+|         208 |      104 |     3 | 2011-01-02  |
++-------------+----------+-------+-------------+
+14 rows in set (0.00 sec)
+
+Using ON UPDATE, ON DELETE options
+-----------------------------------
+
+DELETE FROM reviewer
+    -> where reviewer_id = 201;
+	
+SELECT * FROM reviewer;
++-------------+------------------+
+| reviewer_id | reviewer_name    |
++-------------+------------------+
+|         202 | Daniel Lewis     |
+|         203 | Brittany Harris  |
+|         204 | Mike Anderson    |
+|         205 | Chris jackson    |
+|         206 | Elizabeth Thomas |
+|         207 | James Cameron    |
+|         208 | Ashley White     |
++-------------+------------------+
+	
+SELECT * FROM rating;
++-------------+----------+-------+-------------+
+| reviewer_id | movie_id | stars | rating_date |
++-------------+----------+-------+-------------+
+|         202 |      106 |     4 | NULL        |
+|         203 |      103 |     2 | 2011-01-20  |
+|         203 |      108 |     4 | 2011-01-12  |
+|         203 |      108 |     2 | 2011-01-30  |
+|         204 |      101 |     3 | 2011-01-09  |
+|         205 |      103 |     3 | 2011-01-27  |
+|         205 |      104 |     2 | 2011-01-22  |
+|         205 |      108 |     4 | NULL        |
+|         206 |      107 |     3 | 2011-01-15  |
+|         206 |      106 |     5 | 2011-01-19  |
+|         207 |      107 |     5 | 2011-01-20  |
+|         208 |      104 |     3 | 2011-01-02  |
++-------------+----------+-------+-------------+
+12 rows in set (0.00 sec)
+
+
+UPDATE rating
+    -> SET stars = '0' where rating.reviewer_id = 202;
+
+ SELECT * FROM rating;
++-------------+----------+-------+-------------+
+| reviewer_id | movie_id | stars | rating_date |
++-------------+----------+-------+-------------+
+|         202 |      106 |     0 | NULL        |
+|         203 |      103 |     2 | 2011-01-20  |
+|         203 |      108 |     4 | 2011-01-12  |
+|         203 |      108 |     2 | 2011-01-30  |
+|         204 |      101 |     3 | 2011-01-09  |
+|         205 |      103 |     3 | 2011-01-27  |
+|         205 |      104 |     2 | 2011-01-22  |
+|         205 |      108 |     4 | NULL        |
+|         206 |      107 |     3 | 2011-01-15  |
+|         206 |      106 |     5 | 2011-01-19  |
+|         207 |      107 |     5 | 2011-01-20  |
+|         208 |      104 |     3 | 2011-01-02  |
++-------------+----------+-------+-------------+
+12 rows in set (0.00 sec)
+
+UPDATE movie
+	-> 	SET year = '1984' WHERE movie_id = 104;
+	
+SELECT * FROM movie;
++----------+-------------------------+------+------------------+
+| movie_id | title                   | year | director         |
++----------+-------------------------+------+------------------+
+|      101 | Gone with the Wind      | 1939 | Victor Fleming   |
+|      102 | Star Wars               | 1977 | George Lucas     |
+|      103 | The Sound of Music      | 1965 | Robert Wise      |
+|      104 | E.T.                    | 1984 | Steven Spielberg |
+|      105 | Titanic                 | 1997 | James Cameron    |
+|      106 | Snow White              | 1937 | NULL             |
+|      107 | Avatar                  | 2009 | James Cameron    |
+|      108 | Raiders of the Lost Ark | 1981 | Steven Spielberg |
++----------+-------------------------+------+------------------+
+8 rows in set (0.00 sec)
+
+
+Task 2 :-
+
+1)
+SELECT * FROM movie;
++----------+-------------------------+------+------------------+
+| movie_id | title                   | year | director         |
++----------+-------------------------+------+------------------+
+|      101 | Gone with the Wind      | 1939 | Victor Fleming   |
+|      102 | Star Wars               | 1977 | George Lucas     |
+|      103 | The Sound of Music      | 1965 | Robert Wise      |
+|      104 | E.T.                    | 1982 | Steven Spielberg |
+|      105 | Titanic                 | 1997 | James Cameron    |
+|      106 | Snow White              | 1937 | NULL             |
+|      107 | Avatar                  | 2009 | James Cameron    |
+|      108 | Raiders of the Lost Ark | 1981 | Steven Spielberg |
++----------+-------------------------+------+------------------+
+8 rows in set (0.00 sec)
+
+2)
+SELECT * FROM movie WHERE director='James Cameron';
++----------+---------+------+---------------+
+| movie_id | title   | year | director      |
++----------+---------+------+---------------+
+|      105 | Titanic | 1997 | James Cameron |
+|      107 | Avatar  | 2009 | James Cameron |
++----------+---------+------+---------------+
+2 rows in set (0.00 sec)
+
+3)
+SELECT * FROM movie WHERE director='James Cameron' AND year>=2000;
++----------+--------+------+---------------+
+| movie_id | title  | year | director      |
++----------+--------+------+---------------+
+|      107 | Avatar | 2009 | James Cameron |
++----------+--------+------+---------------+
+1 row in set (0.00 sec)
+
+4)
+SELECT stars FROM rating;
++-------+
+| stars |
++-------+
+|     2 |
+|     4 |
+|     4 |
+|     2 |
+|     4 |
+|     2 |
+|     3 |
+|     3 |
+|     2 |
+|     4 |
+|     3 |
+|     5 |
+|     5 |
+|     3 |
++-------+
+14 rows in set (0.00 sec)
+
+5)
+SELECT DISTINCT stars FROM rating;
++-------+
+| stars |
++-------+
+|     2 |
+|     4 |
+|     3 |
+|     5 |
++-------+
+4 rows in set (0.00 sec)
+
+6)
+SELECT movie_id, director FROM movie;
++----------+------------------+
+| movie_id | director         |
++----------+------------------+
+|      101 | Victor Fleming   |
+|      102 | George Lucas     |
+|      103 | Robert Wise      |
+|      104 | Steven Spielberg |
+|      105 | James Cameron    |
+|      106 | NULL             |
+|      107 | James Cameron    |
+|      108 | Steven Spielberg |
++----------+------------------+
+8 rows in set (0.00 sec)
+
+7)
+SELECT movie_id, title, year FROM movie WHERE director='Steven Spielberg';
++----------+-------------------------+------+
+| movie_id | title                   | year |
++----------+-------------------------+------+
+|      104 | E.T.                    | 1982 |
+|      108 | Raiders of the Lost Ark | 1981 |
++----------+-------------------------+------+
+2 rows in set (0.00 sec)
+
+8)
+SELECT * FROM movie CROSS JOIN rating;
++----------+-------------------------+------+------------------+-------------+----------+-------+-------------+
+| movie_id | title                   | year | director         | reviewer_id | movie_id | stars | rating_date |
++----------+-------------------------+------+------------------+-------------+----------+-------+-------------+
+|      101 | Gone with the Wind      | 1939 | Victor Fleming   |         201 |      101 |     2 | 2011-01-22  |
+|      102 | Star Wars               | 1977 | George Lucas     |         201 |      101 |     2 | 2011-01-22  |
+|      103 | The Sound of Music      | 1965 | Robert Wise      |         201 |      101 |     2 | 2011-01-22  |
+|      104 | E.T.                    | 1982 | Steven Spielberg |         201 |      101 |     2 | 2011-01-22  |
+|      105 | Titanic                 | 1997 | James Cameron    |         201 |      101 |     2 | 2011-01-22  |
+|      106 | Snow White              | 1937 | NULL             |         201 |      101 |     2 | 2011-01-22  |
+|      107 | Avatar                  | 2009 | James Cameron    |         201 |      101 |     2 | 2011-01-22  |
+|      108 | Raiders of the Lost Ark | 1981 | Steven Spielberg |         201 |      101 |     2 | 2011-01-22  |
+|      101 | Gone with the Wind      | 1939 | Victor Fleming   |         201 |      101 |     4 | 2011-01-27  |
+|      102 | Star Wars               | 1977 | George Lucas     |         201 |      101 |     4 | 2011-01-27  |
+|      103 | The Sound of Music      | 1965 | Robert Wise      |         201 |      101 |     4 | 2011-01-27  |
+|      104 | E.T.                    | 1982 | Steven Spielberg |         201 |      101 |     4 | 2011-01-27  |
+|      105 | Titanic                 | 1997 | James Cameron    |         201 |      101 |     4 | 2011-01-27  |
+|      106 | Snow White              | 1937 | NULL             |         201 |      101 |     4 | 2011-01-27  |
+|      107 | Avatar                  | 2009 | James Cameron    |         201 |      101 |     4 | 2011-01-27  |
+|      108 | Raiders of the Lost Ark | 1981 | Steven Spielberg |         201 |      101 |     4 | 2011-01-27  |
+|      101 | Gone with the Wind      | 1939 | Victor Fleming   |         202 |      106 |     4 | NULL        |
+|      102 | Star Wars               | 1977 | George Lucas     |         202 |      106 |     4 | NULL        |
+|      103 | The Sound of Music      | 1965 | Robert Wise      |         202 |      106 |     4 | NULL        |
+|      104 | E.T.                    | 1982 | Steven Spielberg |         202 |      106 |     4 | NULL        |
+|      105 | Titanic                 | 1997 | James Cameron    |         202 |      106 |     4 | NULL        |
+|      106 | Snow White              | 1937 | NULL             |         202 |      106 |     4 | NULL        |
+|      107 | Avatar                  | 2009 | James Cameron    |         202 |      106 |     4 | NULL        |
+|      108 | Raiders of the Lost Ark | 1981 | Steven Spielberg |         202 |      106 |     4 | NULL        |
+|      101 | Gone with the Wind      | 1939 | Victor Fleming   |         203 |      103 |     2 | 2011-01-20  |
+|      102 | Star Wars               | 1977 | George Lucas     |         203 |      103 |     2 | 2011-01-20  |
+|      103 | The Sound of Music      | 1965 | Robert Wise      |         203 |      103 |     2 | 2011-01-20  |
+|      104 | E.T.                    | 1982 | Steven Spielberg |         203 |      103 |     2 | 2011-01-20  |
+|      105 | Titanic                 | 1997 | James Cameron    |         203 |      103 |     2 | 2011-01-20  |
+|      106 | Snow White              | 1937 | NULL             |         203 |      103 |     2 | 2011-01-20  |
+|      107 | Avatar                  | 2009 | James Cameron    |         203 |      103 |     2 | 2011-01-20  |
+|      108 | Raiders of the Lost Ark | 1981 | Steven Spielberg |         203 |      103 |     2 | 2011-01-20  |
+|      101 | Gone with the Wind      | 1939 | Victor Fleming   |         203 |      108 |     4 | 2011-01-12  |
+|      102 | Star Wars               | 1977 | George Lucas     |         203 |      108 |     4 | 2011-01-12  |
+|      103 | The Sound of Music      | 1965 | Robert Wise      |         203 |      108 |     4 | 2011-01-12  |
+|      104 | E.T.                    | 1982 | Steven Spielberg |         203 |      108 |     4 | 2011-01-12  |
+|      105 | Titanic                 | 1997 | James Cameron    |         203 |      108 |     4 | 2011-01-12  |
+|      106 | Snow White              | 1937 | NULL             |         203 |      108 |     4 | 2011-01-12  |
+|      107 | Avatar                  | 2009 | James Cameron    |         203 |      108 |     4 | 2011-01-12  |
+|      108 | Raiders of the Lost Ark | 1981 | Steven Spielberg |         203 |      108 |     4 | 2011-01-12  |
+|      101 | Gone with the Wind      | 1939 | Victor Fleming   |         203 |      108 |     2 | 2011-01-30  |
+|      102 | Star Wars               | 1977 | George Lucas     |         203 |      108 |     2 | 2011-01-30  |
+|      103 | The Sound of Music      | 1965 | Robert Wise      |         203 |      108 |     2 | 2011-01-30  |
+|      104 | E.T.                    | 1982 | Steven Spielberg |         203 |      108 |     2 | 2011-01-30  |
+|      105 | Titanic                 | 1997 | James Cameron    |         203 |      108 |     2 | 2011-01-30  |
+|      106 | Snow White              | 1937 | NULL             |         203 |      108 |     2 | 2011-01-30  |
+|      107 | Avatar                  | 2009 | James Cameron    |         203 |      108 |     2 | 2011-01-30  |
+|      108 | Raiders of the Lost Ark | 1981 | Steven Spielberg |         203 |      108 |     2 | 2011-01-30  |
+|      101 | Gone with the Wind      | 1939 | Victor Fleming   |         204 |      101 |     3 | 2011-01-09  |
+|      102 | Star Wars               | 1977 | George Lucas     |         204 |      101 |     3 | 2011-01-09  |
+|      103 | The Sound of Music      | 1965 | Robert Wise      |         204 |      101 |     3 | 2011-01-09  |
+|      104 | E.T.                    | 1982 | Steven Spielberg |         204 |      101 |     3 | 2011-01-09  |
+|      105 | Titanic                 | 1997 | James Cameron    |         204 |      101 |     3 | 2011-01-09  |
+|      106 | Snow White              | 1937 | NULL             |         204 |      101 |     3 | 2011-01-09  |
+|      107 | Avatar                  | 2009 | James Cameron    |         204 |      101 |     3 | 2011-01-09  |
+|      108 | Raiders of the Lost Ark | 1981 | Steven Spielberg |         204 |      101 |     3 | 2011-01-09  |
+|      101 | Gone with the Wind      | 1939 | Victor Fleming   |         205 |      103 |     3 | 2011-01-27  |
+|      102 | Star Wars               | 1977 | George Lucas     |         205 |      103 |     3 | 2011-01-27  |
+|      103 | The Sound of Music      | 1965 | Robert Wise      |         205 |      103 |     3 | 2011-01-27  |
+|      104 | E.T.                    | 1982 | Steven Spielberg |         205 |      103 |     3 | 2011-01-27  |
+|      105 | Titanic                 | 1997 | James Cameron    |         205 |      103 |     3 | 2011-01-27  |
+|      106 | Snow White              | 1937 | NULL             |         205 |      103 |     3 | 2011-01-27  |
+|      107 | Avatar                  | 2009 | James Cameron    |         205 |      103 |     3 | 2011-01-27  |
+|      108 | Raiders of the Lost Ark | 1981 | Steven Spielberg |         205 |      103 |     3 | 2011-01-27  |
+|      101 | Gone with the Wind      | 1939 | Victor Fleming   |         205 |      104 |     2 | 2011-01-22  |
+|      102 | Star Wars               | 1977 | George Lucas     |         205 |      104 |     2 | 2011-01-22  |
+|      103 | The Sound of Music      | 1965 | Robert Wise      |         205 |      104 |     2 | 2011-01-22  |
+|      104 | E.T.                    | 1982 | Steven Spielberg |         205 |      104 |     2 | 2011-01-22  |
+|      105 | Titanic                 | 1997 | James Cameron    |         205 |      104 |     2 | 2011-01-22  |
+|      106 | Snow White              | 1937 | NULL             |         205 |      104 |     2 | 2011-01-22  |
+|      107 | Avatar                  | 2009 | James Cameron    |         205 |      104 |     2 | 2011-01-22  |
+|      108 | Raiders of the Lost Ark | 1981 | Steven Spielberg |         205 |      104 |     2 | 2011-01-22  |
+|      101 | Gone with the Wind      | 1939 | Victor Fleming   |         205 |      108 |     4 | NULL        |
+|      102 | Star Wars               | 1977 | George Lucas     |         205 |      108 |     4 | NULL        |
+|      103 | The Sound of Music      | 1965 | Robert Wise      |         205 |      108 |     4 | NULL        |
+|      104 | E.T.                    | 1982 | Steven Spielberg |         205 |      108 |     4 | NULL        |
+|      105 | Titanic                 | 1997 | James Cameron    |         205 |      108 |     4 | NULL        |
+|      106 | Snow White              | 1937 | NULL             |         205 |      108 |     4 | NULL        |
+|      107 | Avatar                  | 2009 | James Cameron    |         205 |      108 |     4 | NULL        |
+|      108 | Raiders of the Lost Ark | 1981 | Steven Spielberg |         205 |      108 |     4 | NULL        |
+|      101 | Gone with the Wind      | 1939 | Victor Fleming   |         206 |      107 |     3 | 2011-01-15  |
+|      102 | Star Wars               | 1977 | George Lucas     |         206 |      107 |     3 | 2011-01-15  |
+|      103 | The Sound of Music      | 1965 | Robert Wise      |         206 |      107 |     3 | 2011-01-15  |
+|      104 | E.T.                    | 1982 | Steven Spielberg |         206 |      107 |     3 | 2011-01-15  |
+|      105 | Titanic                 | 1997 | James Cameron    |         206 |      107 |     3 | 2011-01-15  |
+|      106 | Snow White              | 1937 | NULL             |         206 |      107 |     3 | 2011-01-15  |
+|      107 | Avatar                  | 2009 | James Cameron    |         206 |      107 |     3 | 2011-01-15  |
+|      108 | Raiders of the Lost Ark | 1981 | Steven Spielberg |         206 |      107 |     3 | 2011-01-15  |
+|      101 | Gone with the Wind      | 1939 | Victor Fleming   |         206 |      106 |     5 | 2011-01-19  |
+|      102 | Star Wars               | 1977 | George Lucas     |         206 |      106 |     5 | 2011-01-19  |
+|      103 | The Sound of Music      | 1965 | Robert Wise      |         206 |      106 |     5 | 2011-01-19  |
+|      104 | E.T.                    | 1982 | Steven Spielberg |         206 |      106 |     5 | 2011-01-19  |
+|      105 | Titanic                 | 1997 | James Cameron    |         206 |      106 |     5 | 2011-01-19  |
+|      106 | Snow White              | 1937 | NULL             |         206 |      106 |     5 | 2011-01-19  |
+|      107 | Avatar                  | 2009 | James Cameron    |         206 |      106 |     5 | 2011-01-19  |
+|      108 | Raiders of the Lost Ark | 1981 | Steven Spielberg |         206 |      106 |     5 | 2011-01-19  |
+|      101 | Gone with the Wind      | 1939 | Victor Fleming   |         207 |      107 |     5 | 2011-01-20  |
+|      102 | Star Wars               | 1977 | George Lucas     |         207 |      107 |     5 | 2011-01-20  |
+|      103 | The Sound of Music      | 1965 | Robert Wise      |         207 |      107 |     5 | 2011-01-20  |
+|      104 | E.T.                    | 1982 | Steven Spielberg |         207 |      107 |     5 | 2011-01-20  |
+|      105 | Titanic                 | 1997 | James Cameron    |         207 |      107 |     5 | 2011-01-20  |
+|      106 | Snow White              | 1937 | NULL             |         207 |      107 |     5 | 2011-01-20  |
+|      107 | Avatar                  | 2009 | James Cameron    |         207 |      107 |     5 | 2011-01-20  |
+|      108 | Raiders of the Lost Ark | 1981 | Steven Spielberg |         207 |      107 |     5 | 2011-01-20  |
+|      101 | Gone with the Wind      | 1939 | Victor Fleming   |         208 |      104 |     3 | 2011-01-02  |
+|      102 | Star Wars               | 1977 | George Lucas     |         208 |      104 |     3 | 2011-01-02  |
+|      103 | The Sound of Music      | 1965 | Robert Wise      |         208 |      104 |     3 | 2011-01-02  |
+|      104 | E.T.                    | 1982 | Steven Spielberg |         208 |      104 |     3 | 2011-01-02  |
+|      105 | Titanic                 | 1997 | James Cameron    |         208 |      104 |     3 | 2011-01-02  |
+|      106 | Snow White              | 1937 | NULL             |         208 |      104 |     3 | 2011-01-02  |
+|      107 | Avatar                  | 2009 | James Cameron    |         208 |      104 |     3 | 2011-01-02  |
+|      108 | Raiders of the Lost Ark | 1981 | Steven Spielberg |         208 |      104 |     3 | 2011-01-02  |
++----------+-------------------------+------+------------------+-------------+----------+-------+-------------+
+112 rows in set (0.00 sec)
+
+9)
+SELECT movie.movie_id, movie.title, rating.movie_id, rating.reviewer_id FROM movie,rating;
++----------+-------------------------+----------+-------------+
+| movie_id | title                   | movie_id | reviewer_id |
++----------+-------------------------+----------+-------------+
+|      101 | Gone with the Wind      |      101 |         201 |
+|      102 | Star Wars               |      101 |         201 |
+|      103 | The Sound of Music      |      101 |         201 |
+|      104 | E.T.                    |      101 |         201 |
+|      105 | Titanic                 |      101 |         201 |
+|      106 | Snow White              |      101 |         201 |
+|      107 | Avatar                  |      101 |         201 |
+|      108 | Raiders of the Lost Ark |      101 |         201 |
+|      101 | Gone with the Wind      |      101 |         201 |
+|      102 | Star Wars               |      101 |         201 |
+|      103 | The Sound of Music      |      101 |         201 |
+|      104 | E.T.                    |      101 |         201 |
+|      105 | Titanic                 |      101 |         201 |
+|      106 | Snow White              |      101 |         201 |
+|      107 | Avatar                  |      101 |         201 |
+|      108 | Raiders of the Lost Ark |      101 |         201 |
+|      101 | Gone with the Wind      |      106 |         202 |
+|      102 | Star Wars               |      106 |         202 |
+|      103 | The Sound of Music      |      106 |         202 |
+|      104 | E.T.                    |      106 |         202 |
+|      105 | Titanic                 |      106 |         202 |
+|      106 | Snow White              |      106 |         202 |
+|      107 | Avatar                  |      106 |         202 |
+|      108 | Raiders of the Lost Ark |      106 |         202 |
+|      101 | Gone with the Wind      |      103 |         203 |
+|      102 | Star Wars               |      103 |         203 |
+|      103 | The Sound of Music      |      103 |         203 |
+|      104 | E.T.                    |      103 |         203 |
+|      105 | Titanic                 |      103 |         203 |
+|      106 | Snow White              |      103 |         203 |
+|      107 | Avatar                  |      103 |         203 |
+|      108 | Raiders of the Lost Ark |      103 |         203 |
+|      101 | Gone with the Wind      |      108 |         203 |
+|      102 | Star Wars               |      108 |         203 |
+|      103 | The Sound of Music      |      108 |         203 |
+|      104 | E.T.                    |      108 |         203 |
+|      105 | Titanic                 |      108 |         203 |
+|      106 | Snow White              |      108 |         203 |
+|      107 | Avatar                  |      108 |         203 |
+|      108 | Raiders of the Lost Ark |      108 |         203 |
+|      101 | Gone with the Wind      |      108 |         203 |
+|      102 | Star Wars               |      108 |         203 |
+|      103 | The Sound of Music      |      108 |         203 |
+|      104 | E.T.                    |      108 |         203 |
+|      105 | Titanic                 |      108 |         203 |
+|      106 | Snow White              |      108 |         203 |
+|      107 | Avatar                  |      108 |         203 |
+|      108 | Raiders of the Lost Ark |      108 |         203 |
+|      101 | Gone with the Wind      |      101 |         204 |
+|      102 | Star Wars               |      101 |         204 |
+|      103 | The Sound of Music      |      101 |         204 |
+|      104 | E.T.                    |      101 |         204 |
+|      105 | Titanic                 |      101 |         204 |
+|      106 | Snow White              |      101 |         204 |
+|      107 | Avatar                  |      101 |         204 |
+|      108 | Raiders of the Lost Ark |      101 |         204 |
+|      101 | Gone with the Wind      |      103 |         205 |
+|      102 | Star Wars               |      103 |         205 |
+|      103 | The Sound of Music      |      103 |         205 |
+|      104 | E.T.                    |      103 |         205 |
+|      105 | Titanic                 |      103 |         205 |
+|      106 | Snow White              |      103 |         205 |
+|      107 | Avatar                  |      103 |         205 |
+|      108 | Raiders of the Lost Ark |      103 |         205 |
+|      101 | Gone with the Wind      |      104 |         205 |
+|      102 | Star Wars               |      104 |         205 |
+|      103 | The Sound of Music      |      104 |         205 |
+|      104 | E.T.                    |      104 |         205 |
+|      105 | Titanic                 |      104 |         205 |
+|      106 | Snow White              |      104 |         205 |
+|      107 | Avatar                  |      104 |         205 |
+|      108 | Raiders of the Lost Ark |      104 |         205 |
+|      101 | Gone with the Wind      |      108 |         205 |
+|      102 | Star Wars               |      108 |         205 |
+|      103 | The Sound of Music      |      108 |         205 |
+|      104 | E.T.                    |      108 |         205 |
+|      105 | Titanic                 |      108 |         205 |
+|      106 | Snow White              |      108 |         205 |
+|      107 | Avatar                  |      108 |         205 |
+|      108 | Raiders of the Lost Ark |      108 |         205 |
+|      101 | Gone with the Wind      |      107 |         206 |
+|      102 | Star Wars               |      107 |         206 |
+|      103 | The Sound of Music      |      107 |         206 |
+|      104 | E.T.                    |      107 |         206 |
+|      105 | Titanic                 |      107 |         206 |
+|      106 | Snow White              |      107 |         206 |
+|      107 | Avatar                  |      107 |         206 |
+|      108 | Raiders of the Lost Ark |      107 |         206 |
+|      101 | Gone with the Wind      |      106 |         206 |
+|      102 | Star Wars               |      106 |         206 |
+|      103 | The Sound of Music      |      106 |         206 |
+|      104 | E.T.                    |      106 |         206 |
+|      105 | Titanic                 |      106 |         206 |
+|      106 | Snow White              |      106 |         206 |
+|      107 | Avatar                  |      106 |         206 |
+|      108 | Raiders of the Lost Ark |      106 |         206 |
+|      101 | Gone with the Wind      |      107 |         207 |
+|      102 | Star Wars               |      107 |         207 |
+|      103 | The Sound of Music      |      107 |         207 |
+|      104 | E.T.                    |      107 |         207 |
+|      105 | Titanic                 |      107 |         207 |
+|      106 | Snow White              |      107 |         207 |
+|      107 | Avatar                  |      107 |         207 |
+|      108 | Raiders of the Lost Ark |      107 |         207 |
+|      101 | Gone with the Wind      |      104 |         208 |
+|      102 | Star Wars               |      104 |         208 |
+|      103 | The Sound of Music      |      104 |         208 |
+|      104 | E.T.                    |      104 |         208 |
+|      105 | Titanic                 |      104 |         208 |
+|      106 | Snow White              |      104 |         208 |
+|      107 | Avatar                  |      104 |         208 |
+|      108 | Raiders of the Lost Ark |      104 |         208 |
++----------+-------------------------+----------+-------------+
+112 rows in set (0.00 sec)
+
+10)
+SELECT title, reviewer_id, stars FROM movie, rating WHERE rating.movie_id=movie.movie_id;
++-------------------------+-------------+-------+
+| title                   | reviewer_id | stars |
++-------------------------+-------------+-------+
+| Gone with the Wind      |         201 |     2 |
+| Gone with the Wind      |         201 |     4 |
+| Gone with the Wind      |         204 |     3 |
+| The Sound of Music      |         203 |     2 |
+| The Sound of Music      |         205 |     3 |
+| E.T.                    |         205 |     2 |
+| E.T.                    |         208 |     3 |
+| Snow White              |         202 |     4 |
+| Snow White              |         206 |     5 |
+| Avatar                  |         206 |     3 |
+| Avatar                  |         207 |     5 |
+| Raiders of the Lost Ark |         203 |     4 |
+| Raiders of the Lost Ark |         203 |     2 |
+| Raiders of the Lost Ark |         205 |     4 |
++-------------------------+-------------+-------+
+14 rows in set (0.00 sec)
+
+11)
+SELECT title, reviewer_id, stars FROM movie, rating WHERE rating.movie_id=movie.movie_id AND stars<=3;
++-------------------------+-------------+-------+
+| title                   | reviewer_id | stars |
++-------------------------+-------------+-------+
+| Gone with the Wind      |         201 |     2 |
+| Gone with the Wind      |         204 |     3 |
+| The Sound of Music      |         203 |     2 |
+| The Sound of Music      |         205 |     3 |
+| E.T.                    |         205 |     2 |
+| E.T.                    |         208 |     3 |
+| Avatar                  |         206 |     3 |
+| Raiders of the Lost Ark |         203 |     2 |
++-------------------------+-------------+-------+
+8 rows in set (0.00 sec)
+
+12)
+SELECT title, reviewer_id, stars FROM movie, rating WHERE rating.movie_id=movie.movie_id AND stars<=4 AND stars>=2;
++-------------------------+-------------+-------+
+| title                   | reviewer_id | stars |
++-------------------------+-------------+-------+
+| Gone with the Wind      |         201 |     2 |
+| Gone with the Wind      |         201 |     4 |
+| Gone with the Wind      |         204 |     3 |
+| The Sound of Music      |         203 |     2 |
+| The Sound of Music      |         205 |     3 |
+| E.T.                    |         205 |     2 |
+| E.T.                    |         208 |     3 |
+| Snow White              |         202 |     4 |
+| Avatar                  |         206 |     3 |
+| Raiders of the Lost Ark |         203 |     4 |
+| Raiders of the Lost Ark |         203 |     2 |
+| Raiders of the Lost Ark |         205 |     4 |
++-------------------------+-------------+-------+
+12 rows in set (0.00 sec)
+
+13)
+SELECT reviewer_id, movie.movie_id FROM rating, movie WHERE movie.movie_id= rating.movie_id;
++-------------+----------+
+| reviewer_id | movie_id |
++-------------+----------+
+|         201 |      101 |
+|         201 |      101 |
+|         204 |      101 |
+|         203 |      103 |
+|         205 |      103 |
+|         205 |      104 |
+|         208 |      104 |
+|         202 |      106 |
+|         206 |      106 |
+|         206 |      107 |
+|         207 |      107 |
+|         203 |      108 |
+|         203 |      108 |
+|         205 |      108 |
++-------------+----------+
+14 rows in set (0.00 sec)
+
+14)
+SELECT DISTINCT reviewer_id, movie.movie_id FROM rating, movie WHERE movie.movie_id= rating.movie_id;
++-------------+----------+
+| reviewer_id | movie_id |
++-------------+----------+
+|         201 |      101 |
+|         204 |      101 |
+|         203 |      103 |
+|         205 |      103 |
+|         205 |      104 |
+|         208 |      104 |
+|         202 |      106 |
+|         206 |      106 |
+|         206 |      107 |
+|         207 |      107 |
+|         203 |      108 |
+|         205 |      108 |
++-------------+----------+
+12 rows in set (0.00 sec)
+
+15)
+SELECT movie.movie_id,title,reviewer.reviewer_id,reviewer_name,stars FROM movie,reviewer,rating WHERE movie.movie_id=rating.movie_id AND reviewer.reviewer_id=rating.reviewer_id;
++----------+-------------------------+-------------+------------------+-------+
+| movie_id | title                   | reviewer_id | reviewer_name    | stars |
++----------+-------------------------+-------------+------------------+-------+
+|      101 | Gone with the Wind      |         201 | Sarah Martinez   |     2 |
+|      101 | Gone with the Wind      |         201 | Sarah Martinez   |     4 |
+|      101 | Gone with the Wind      |         204 | Mike Anderson    |     3 |
+|      103 | The Sound of Music      |         203 | Brittany Harris  |     2 |
+|      103 | The Sound of Music      |         205 | Chris Jackson    |     3 |
+|      104 | E.T.                    |         205 | Chris Jackson    |     2 |
+|      104 | E.T.                    |         208 | Ashley White     |     3 |
+|      106 | Snow White              |         202 | Daniel Lewis     |     4 |
+|      106 | Snow White              |         206 | Elizabeth Thomas |     5 |
+|      107 | Avatar                  |         206 | Elizabeth Thomas |     3 |
+|      107 | Avatar                  |         207 | James Cameron    |     5 |
+|      108 | Raiders of the Lost Ark |         203 | Brittany Harris  |     4 |
+|      108 | Raiders of the Lost Ark |         203 | Brittany Harris  |     2 |
+|      108 | Raiders of the Lost Ark |         205 | Chris Jackson    |     4 |
++----------+-------------------------+-------------+------------------+-------+
+14 rows in set (0.00 sec)
+
+16)
+SELECT movie.movie_id,title,reviewer.reviewer_id,reviewer_name,stars FROM movie,reviewer,rating WHERE movie.movie_id=rating.movie_id AND reviewer.reviewer_id=rating.reviewer_id AND stars=5;
++----------+------------+-------------+------------------+-------+
+| movie_id | title      | reviewer_id | reviewer_name    | stars |
++----------+------------+-------------+------------------+-------+
+|      106 | Snow White |         206 | Elizabeth Thomas |     5 |
+|      107 | Avatar     |         207 | James Cameron    |     5 |
++----------+------------+-------------+------------------+-------+
+2 rows in set (0.00 sec)
+
+17)
+SELECT title, reviewer_name, stars FROM movie, reviewer, rating WHERE movie.movie_id=rating.movie_id AND reviewer.reviewer_id = rating.reviewer_id AND rating_date is NULL ;
++-------------------------+---------------+-------+
+| title                   | reviewer_name | stars |
++-------------------------+---------------+-------+
+| Snow White              | Daniel Lewis  |     4 |
+| Raiders of the Lost Ark | Chris Jackson |     4 |
++-------------------------+---------------+-------+
+2 rows in set (0.00 sec)
+
+18)
+(SELECT director FROM movie WHERE director is NOT NULL) UNION (SELECT reviewer_name FROM reviewer WHERE reviewer_name is NOT NULL);
++------------------+
+| director         |
++------------------+
+| Victor Fleming   |
+| George Lucas     |
+| Robert Wise      |
+| Steven Spielberg |
+| James Cameron    |
+| Sarah Martinez   |
+| Daniel Lewis     |
+| Brittany Harris  |
+| Mike Anderson    |
+| Chris Jackson    |
+| Elizabeth Thomas |
+| Ashley White     |
++------------------+
+12 rows in set (0.00 sec)
+
+19)
+SELECT * FROM reviewer WHERE reviewer_name LIKE '%Martinez%';
++-------------+----------------+
+| reviewer_id | reviewer_name  |
++-------------+----------------+
+|         201 | Sarah Martinez |
++-------------+----------------+
+1 row in set (0.00 sec)
+
+20)
+SELECT * FROM rating WHERE rating_date LIKE '____-__-0_';
++-------------+----------+-------+-------------+
+| reviewer_id | movie_id | stars | rating_date |
++-------------+----------+-------+-------------+
+|         204 |      101 |     3 | 2011-01-09  |
+|         208 |      104 |     3 | 2011-01-02  |
++-------------+----------+-------+-------------+
+2 rows in set (0.00 sec)
+
+21)
+SELECT * FROM rating WHERE rating_date<'2011-01-10';
++-------------+----------+-------+-------------+
+| reviewer_id | movie_id | stars | rating_date |
++-------------+----------+-------+-------------+
+|         204 |      101 |     3 | 2011-01-09  |
+|         208 |      104 |     3 | 2011-01-02  |
++-------------+----------+-------+-------------+
+2 rows in set (0.00 sec)
+
+22)
+UPDATE rating,reviewer SET stars = CONCAT(stars+1) WHERE reviewer.reviewer_id=rating.reviewer_id AND reviewer_name='Brittany Harris';
+
+SELECT * FROM rating;
++-------------+----------+-------+-------------+
+| reviewer_id | movie_id | stars | rating_date |
++-------------+----------+-------+-------------+
+|         201 |      101 |     2 | 2011-01-22  |
+|         201 |      101 |     4 | 2011-01-27  |
+|         202 |      106 |     4 | NULL        |
+|         203 |      103 |     3 | 2011-01-20  |
+|         203 |      108 |     5 | 2011-01-12  |
+|         203 |      108 |     3 | 2011-01-30  |
+|         204 |      101 |     3 | 2011-01-09  |
+|         205 |      103 |     3 | 2011-01-27  |
+|         205 |      104 |     2 | 2011-01-22  |
+|         205 |      108 |     4 | NULL        |
+|         206 |      107 |     3 | 2011-01-15  |
+|         206 |      106 |     5 | 2011-01-19  |
+|         207 |      107 |     5 | 2011-01-20  |
+|         208 |      104 |     3 | 2011-01-02  |
++-------------+----------+-------+-------------+
+14 rows in set (0.00 sec)
+
+23)
+SELECT title, reviewer_name, stars FROM movie, reviewer, rating WHERE movie.movie_id=rating.movie_id AND reviewer.reviewer_id=rating.reviewer_id ORDER BY title;
++-------------------------+------------------+-------+
+| title                   | reviewer_name    | stars |
++-------------------------+------------------+-------+
+| Avatar                  | Elizabeth Thomas |     3 |
+| Avatar                  | James Cameron    |     5 |
+| E.T.                    | Chris Jackson    |     2 |
+| E.T.                    | Ashley White     |     3 |
+| Gone with the Wind      | Sarah Martinez   |     2 |
+| Gone with the Wind      | Sarah Martinez   |     4 |
+| Gone with the Wind      | Mike Anderson    |     3 |
+| Raiders of the Lost Ark | Brittany Harris  |     5 |
+| Raiders of the Lost Ark | Brittany Harris  |     3 |
+| Raiders of the Lost Ark | Chris Jackson    |     4 |
+| Snow White              | Daniel Lewis     |     4 |
+| Snow White              | Elizabeth Thomas |     5 |
+| The Sound of Music      | Brittany Harris  |     3 |
+| The Sound of Music      | Chris Jackson    |     3 |
++-------------------------+------------------+-------+
+14 rows in set (0.00 sec)
+
+24)
+SELECT title, reviewer_name, stars FROM movie, reviewer, rating WHERE movie.movie_id=rating.movie_id AND reviewer.reviewer_id=rating.reviewer_id ORDER BY title;
++-------------------------+------------------+-------+
+| title                   | reviewer_name    | stars |
++-------------------------+------------------+-------+
+| Avatar                  | Elizabeth Thomas |     3 |
+| Avatar                  | James Cameron    |     5 |
+| E.T.                    | Chris Jackson    |     2 |
+| E.T.                    | Ashley White     |     3 |
+| Gone with the Wind      | Sarah Martinez   |     2 |
+| Gone with the Wind      | Sarah Martinez   |     4 |
+| Gone with the Wind      | Mike Anderson    |     3 |
+| Raiders of the Lost Ark | Brittany Harris  |     5 |
+| Raiders of the Lost Ark | Brittany Harris  |     3 |
+| Raiders of the Lost Ark | Chris Jackson    |     4 |
+| Snow White              | Daniel Lewis     |     4 |
+| Snow White              | Elizabeth Thomas |     5 |
+| The Sound of Music      | Brittany Harris  |     3 |
+| The Sound of Music      | Chris Jackson    |     3 |
++-------------------------+------------------+-------+
+14 rows in set (0.00 sec)
+
+SELECT title, stars, rating_date FROM movie, rating, reviewer WHERE movie.movie_id=rating.movie_id AND reviewer.reviewer_id=rating.reviewer_id ORDER BY stars DESC;
++-------------------------+-------+-------------+
+| title                   | stars | rating_date |
++-------------------------+-------+-------------+
+| Avatar                  |     5 | 2011-01-20  |
+| Raiders of the Lost Ark |     5 | 2011-01-12  |
+| Snow White              |     5 | 2011-01-19  |
+| Raiders of the Lost Ark |     4 | NULL        |
+| Snow White              |     4 | NULL        |
+| Gone with the Wind      |     4 | 2011-01-27  |
+| Avatar                  |     3 | 2011-01-15  |
+| Gone with the Wind      |     3 | 2011-01-09  |
+| E.T.                    |     3 | 2011-01-02  |
+| The Sound of Music      |     3 | 2011-01-20  |
+| The Sound of Music      |     3 | 2011-01-27  |
+| Raiders of the Lost Ark |     3 | 2011-01-30  |
+| E.T.                    |     2 | 2011-01-22  |
+| Gone with the Wind      |     2 | 2011-01-22  |
++-------------------------+-------+-------------+
+14 rows in set (0.00 sec)
+
+SELECT title, stars, rating_date FROM movie, rating, reviewer WHERE movie.movie_id=rating.movie_id AND reviewer.reviewer_id=rating.reviewer_id ORDER BY rating_date DESC;
++-------------------------+-------+-------------+
+| title                   | stars | rating_date |
++-------------------------+-------+-------------+
+| Raiders of the Lost Ark |     3 | 2011-01-30  |
+| The Sound of Music      |     3 | 2011-01-27  |
+| Gone with the Wind      |     4 | 2011-01-27  |
+| E.T.                    |     2 | 2011-01-22  |
+| Gone with the Wind      |     2 | 2011-01-22  |
+| Avatar                  |     5 | 2011-01-20  |
+| The Sound of Music      |     3 | 2011-01-20  |
+| Snow White              |     5 | 2011-01-19  |
+| Avatar                  |     3 | 2011-01-15  |
+| Raiders of the Lost Ark |     5 | 2011-01-12  |
+| Gone with the Wind      |     3 | 2011-01-09  |
+| E.T.                    |     3 | 2011-01-02  |
+| Raiders of the Lost Ark |     4 | NULL        |
+| Snow White              |     4 | NULL        |
++-------------------------+-------+-------------+
+14 rows in set (0.00 sec)
+
+
+25)
+SELECT * FROM movie WHERE director IN (SELECT reviewer_name FROM reviewer);
++----------+---------+------+---------------+
+| movie_id | title   | year | director      |
++----------+---------+------+---------------+
+|      105 | Titanic | 1997 | James Cameron |
+|      107 | Avatar  | 2009 | James Cameron |
++----------+---------+------+---------------+
+2 rows in set (0.00 sec)
+
+
+
+

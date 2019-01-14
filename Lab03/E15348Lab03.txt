@@ -1,0 +1,29 @@
+SHOW databases;
+CREATE DATABASE E15348;
+use E15348;
+
+CREATE TABLE customer(customer_id INT NOT NULL AUTO_INCREMENT, first_name CHAR(255), last_name CHAR(255), address1 CHAR(255), address2 CHAR(255), address3 CHAR(255), comments TEXT, PRIMARY KEY(customer_id));
+CREATE TABLE t_shirt(ts_id INT NOT NULL AUTO_INCREMENT, size ENUM('Large','Medium','Small'), color ENUM('Red','Blue','Purple','Green'), PRIMARY KEY(ts_id));
+CREATE TABLE orders(order_no INT NOT NULL AUTO_INCREMENT , cap ENUM('yes','no'), wrist_band ENUM('yes','no'), customer_id INT, ts_id INT, PRIMARY KEY(order_no), CONSTRAINT FK_Customer FOREIGN KEY(customer_id) REFERENCES customer(customer_id), CONSTRAINT FK_Tshirt FOREIGN KEY(ts_id) REFERENCES t_shirt(ts_id));
+
+INSERT INTO customer values(1,'Suhail','Sajahan','Kotampitiya','Panagamauwa','Kurunegala','Send it as quick as possible');
+INSERT INTO t_shirt values(1,'Medium','Blue');
+INSERT INTO orders values(1,'yes','yes',1,1);
+
+INSERT INTO customer values(2,'Sanath','Banadara','Kandy Rd','Mawathagama','Kurunegala','Best wishes for your services');
+INSERT INTO t_shirt values(NULL,'Large','Purple');
+INSERT INTO orders values(2,'no','yes',2,2);
+
+INSERT INTO customer values(NULL,'Michale','Anderson','School Rd','Hemmathagama','Mawanalla','Send it as quick as possible');
+INSERT INTO t_shirt values(NULL,'Small','Green');
+INSERT INTO orders values(NULL,'no','no',3,3);
+
+INSERT INTO customer values(NULL,'Sanath','Banadara','Kandy Rd','Mawathagama','Kurunegala','Best wishes for your services');
+INSERT INTO t_shirt values(NULL,'Small','Green');
+INSERT INTO orders values(NULL,'no','no',4,4);
+
+DELETE FROM orders WHERE order_no=5;
+DELETE FROM customer WHERE customer_id=4;
+DELETE FROM t_shirt WHERE ts_id=4;
+
+UPDATE customer SET address2='Mallawapitiya' WHERE customer_id=2;
